@@ -25,6 +25,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Dodaj to, aby przekierowaæ /movies na plik movies.html
+app.MapGet("/movies", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "movies.html"));
+});
+
 app.MapFallbackToFile("/index.html");
 
 app.Run();
+

@@ -21,13 +21,12 @@
     <div id="moviesContainer"></div>
 
     <script type="module">
-        import React from '../src/MoviesComponent.js';
-        import ReactDOM from 'react-dom';
+        import { createRoot } from 'react-dom';
+        import MoviesComponent from '../src/MoviesComponent.js';
 
-        ReactDOM.render(
-            React.createElement(MoviesComponent),
-            document.getElementById('moviesContainer')
-        );
+        createRoot(document.getElementById('moviesContainer')).render(<MoviesComponent />);
     </script>
+
+
 </body>
 </html>

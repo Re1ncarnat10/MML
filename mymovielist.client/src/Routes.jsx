@@ -1,17 +1,15 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MoviesPage from './MoviesPage';
 
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import MoviesPage from './MoviesPage'; 
-
-const Routes = () => {
+const RoutesComponent = () => {
     return (
         <Router>
-            <Switch>
-                <Route exact path="/movies" component={MoviesPage} />
-               
-            </Switch>
+            <Routes>
+                <Route path="/movies" element={<MoviesPage />} />
+            </Routes>
         </Router>
     );
 };
 
-export default Routes;
+export default RoutesComponent;
+
