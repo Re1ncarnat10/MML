@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace MyMovieList.models
 {
-    public class User
+    public class User : IdentityUser<int>
     {
-        public int UserId { get; set; }
-
         [Required]
         [StringLength(16)]
-        public string Username { get; set; }
+        public override string UserName { get; set; }
 
         [Required]
         [StringLength(30)]
@@ -18,10 +17,11 @@ namespace MyMovieList.models
         [Required]
         [StringLength(30)]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public override string Email { get; set; }
 
         // Relacje
         public virtual ICollection<UserMovie> UserMovies { get; set; }
     }
 }
+
 

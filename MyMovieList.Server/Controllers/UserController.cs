@@ -34,7 +34,7 @@ namespace MyMovieList.Controllers
             return _context.Users.ToList();
         }
 
-        // GET: api/User/5
+        // GET: api/User/id
         [HttpGet("{id}")]
         public ActionResult<User> GetUser(int id)
         {
@@ -58,7 +58,7 @@ namespace MyMovieList.Controllers
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
-        // PUT: api/User/5
+        // PUT: api/User/id
         [HttpPut("{id}")]
         public IActionResult PutUser(int id, User user)
         {
@@ -73,7 +73,7 @@ namespace MyMovieList.Controllers
             return NoContent();
         }
 
-        // DELETE: api/User/5
+        // DELETE: api/User/id
         [HttpDelete("{id}")]
         public ActionResult<User> DeleteUser(int id)
         {
@@ -115,7 +115,6 @@ namespace MyMovieList.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginRequest loginRequest)
         {
-            // Walidacja danych wejściowych
             if (string.IsNullOrEmpty(loginRequest.Username) || string.IsNullOrEmpty(loginRequest.Password))
             {
                 return BadRequest("Nazwa użytkownika i hasło są wymagane.");
