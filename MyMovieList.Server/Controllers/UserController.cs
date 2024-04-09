@@ -55,14 +55,14 @@ namespace MyMovieList.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
         // PUT: api/User/id
         [HttpPut("{id}")]
         public IActionResult PutUser(int id, User user)
         {
-            if (id != user.UserId)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
@@ -107,7 +107,7 @@ namespace MyMovieList.Controllers
             // Generowanie tokena JWT
             var token = GenerateJwtToken(user);
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, new { user, token });
+            return CreatedAtAction("GetUser", new { id = user.Id }, new { user, token });
         }
 
 
@@ -145,10 +145,12 @@ namespace MyMovieList.Controllers
         {
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
-    };
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+};
+
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
