@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using MyMovieList.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -42,34 +41,41 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Create user and admin roles
+// Role
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    var roles = new[] { "user", "admin" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole<int>(role));
+        }
+    }
+}
+
+
+
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    string email = "admin@gmail.com";
+    string password = "Admin123!";
+    string userName = "admin";
 
-    // Admin
-    if (!await roleManager.RoleExistsAsync("admin"))
+    if (await userManager.FindByEmailAsync(email) == null)
     {
-        await roleManager.CreateAsync(new IdentityRole<int>("admin"));
-    }
-
-    // U¿ytkownik
-    if (!await roleManager.RoleExistsAsync("user"))
-    {
-        await roleManager.CreateAsync(new IdentityRole<int>("user"));
-    }
-
-    // Tworzenie u¿ytkownika - admina
-    var adminUser = new User { UserName = "admin", Email = "admin@gmail.com" };
-    var result = await userManager.CreateAsync(adminUser, "admin123");
-
-    // Dodaj role admina do u¿ytkownika admina
-    if (result.Succeeded)
-    {
-        await userManager.AddToRoleAsync(adminUser, "admin");
+        var user = new User { UserName = userName, Email = email };
+        var result = await userManager.CreateAsync(user, password);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, "admin");
+        }
     }
 }
+
 
 
 // Use authentication

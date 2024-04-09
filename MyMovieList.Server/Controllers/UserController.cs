@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using MyMovieList.models;
 using System.Collections.Generic;
 using System.Linq;
-using MyMovieList.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -121,7 +120,7 @@ namespace MyMovieList.Controllers
             }
 
             var user = await _context.Users
-                .SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
+                .SingleOrDefaultAsync(u => u.UserName == loginRequest.Username);
 
             if (user == null)
             {

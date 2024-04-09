@@ -7,7 +7,7 @@ namespace MyMovieList.models
     {
         [Required]
         [StringLength(16)]
-        public override string Username { get; set; }
+        public override string UserName { get; set; }
 
         [Required]
         [StringLength(30)]
