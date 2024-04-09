@@ -67,7 +67,7 @@ using (var scope = app.Services.CreateScope())
 
     if (await userManager.FindByEmailAsync(email) == null)
     {
-        var user = new User { UserName = userName, Email = email };
+        var user = new User { UserName = userName, Email = email, Password=password };
         var result = await userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
