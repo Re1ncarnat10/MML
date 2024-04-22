@@ -107,6 +107,24 @@ namespace MyMovieList.Controllers
 
             return userMovies;
         }
+        // DELETE: api/Movies/RemoveFromMyList/id
+        [Authorize]
+        [HttpDelete("RemoveFromMyList/{id}")]
+        public async Task<ActionResult> RemoveFromMyList(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
+
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            if (userMovie == null)
+            {
+                return NotFound();
+            }
+
+            _context.UserMovies.Remove(userMovie);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
 
