@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyMovieList.Data;
 using MyMovieList.models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MyMovieList.Controllers
@@ -26,7 +27,7 @@ namespace MyMovieList.Controllers
             return await _context.Movies.ToListAsync();
         }
 
-        // GET: api/Movies/5
+        // GET: api/Movies/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Movie>> GetMovie(int id)
         {
@@ -40,49 +41,12 @@ namespace MyMovieList.Controllers
             return movie;
         }
 
-        // PUT: api/Movies/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMovie(int id, Movie movie)
-        {
-            if (id != movie.MovieId)
-            {
-                return BadRequest();
-            }
+        // Metody dla użytkownika do dodawania filmów do listy, usuwania filmów z listy, zmiany statusu filmu na liście, dodawania filmu do ulubionych, dodawania oceny filmu
 
-            _context.Entry(movie).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Movies
-        [HttpPost]
-        public async Task<ActionResult<Movie>> CreateMovie(Movie movie)
-        {
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMovie", new { id = movie.MovieId }, movie);
-        }
-
-        // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Movie>> DeleteMovie(int id)
+        // POST: api/Movies/AddToMyList/id
+        [Authorize]
+        [HttpPost("AddToMyList/{id}")]
+        public async Task<ActionResult> AddToMyList(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
             if (movie == null)
@@ -90,16 +54,78 @@ namespace MyMovieList.Controllers
                 return NotFound();
             }
 
-            _context.Movies.Remove(movie);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
+
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            if (userMovie != null)
+            {
+                return BadRequest("Film jest już na liście użytkownika");
+            }
+
+            userMovie = new UserMovie { UserId = int.Parse(userId), MovieId = id };
+            _context.UserMovies.Add(userMovie);
+
             await _context.SaveChangesAsync();
 
-            return movie;
+            return NoContent();
         }
 
-        private bool MovieExists(int id)
+        // PUT: api/Movies/UpdateMyList/id
+        [Authorize]
+        [HttpPut("UpdateMyList/{id}")]
+        public async Task<ActionResult> UpdateMyList(int id, UserMovie userMovieUpdate)
         {
-            return _context.Movies.Any(e => e.MovieId == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
+
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            if (userMovie == null)
+            {
+                return NotFound();
+            }
+
+            userMovie.StatusId = userMovieUpdate.StatusId;
+            userMovie.IsFavorite = userMovieUpdate.IsFavorite;
+            userMovie.Rating = userMovieUpdate.Rating;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // GET: api/Movies/MyList
+        [Authorize]
+        [HttpGet("MyList")]
+        public async Task<ActionResult<IEnumerable<UserMovie>>> GetMyList()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
+
+            var userMovies = await _context.UserMovies
+                .Include(u => u.Movie)
+                .Include(u => u.Status)
+                .Where(u => u.UserId == int.Parse(userId))
+                .ToListAsync();
+
+            return userMovies;
+        }
+        // DELETE: api/Movies/RemoveFromMyList/id
+        [Authorize]
+        [HttpDelete("RemoveFromMyList/{id}")]
+        public async Task<ActionResult> RemoveFromMyList(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
+
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            if (userMovie == null)
+            {
+                return NotFound();
+            }
+
+            _context.UserMovies.Remove(userMovie);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
+
 
