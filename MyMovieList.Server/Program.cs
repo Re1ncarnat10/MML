@@ -44,6 +44,7 @@ var app = builder.Build();
 // Role
 using (var scope = app.Services.CreateScope())
 {
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     var roles = new[] { "user", "admin" };
 
@@ -54,20 +55,14 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole<int>(role));
         }
     }
-}
 
-
-
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     string email = "admin@gmail.com";
     string password = "Admin123!";
     string userName = "admin";
 
     if (await userManager.FindByEmailAsync(email) == null)
     {
-        var user = new User { UserName = userName, Email = email };
+        var user = new User { UserName = userName, Email = email, Password = password };
         var result = await userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
@@ -75,6 +70,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
+
 
 
 
