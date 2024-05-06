@@ -1,5 +1,4 @@
 import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
@@ -49,7 +48,103 @@ export default defineConfig({
             '^/weatherforecast': {
                 target: 'https://localhost:7020/',
                 secure: false
-            }
+            },
+            '^/Admin': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Admin{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/User': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/User/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/User/register': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/User/login': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Movies': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Movies/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Movies/AddToMyList/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Movies/UpdateMyList/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Movies/MyList': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/Movies/Remove/From/My/List/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Admin': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Admin{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/User': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/User/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/User/register': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/User/login': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Movies': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Movies/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Movies/AddToMyList/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Movies/UpdateMyList/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Movies/MyList': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
+            '^/api/Movies/Remove/From/My/List/{id}': {
+                target: 'https://localhost:7020/',
+                secure: false
+            },
         },
         port: 5173,
         https: {

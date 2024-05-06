@@ -1,18 +1,27 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
-import Header from './Components/Header';
-import MainContent from './Components/MainContent';
-import Footer from './Components/Footer';
-import './index.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './Components/Login.jsx'; // Import your Login component here
+import Register from './Components/Register';
+import Home from './Components/HomePage';
+import Add from './Components/add';
+import "./App.css"
+import "./lib/font-awesome/css/all.min.css"
+import { Header } from './Components/Header';
 
-function App() {
+const App = () => {
     return (
-        <div>
+        <Router>
             <Header />
-            <MainContent />
-            <Footer />
-        </div>
+            <Routes>
+                <Route path="/" element={<Home />} /> 
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/add" element={<Add />} />
+
+            </Routes>
+            
+        </Router>
     );
-}
+};
 
 export default App;
