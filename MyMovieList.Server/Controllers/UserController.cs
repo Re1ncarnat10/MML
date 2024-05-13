@@ -87,28 +87,36 @@ namespace MyMovieList.Controllers
 
             return user;
         }
+        private readonly UserManager<User> _userManager;
+
+        public UserController(MyDbContext context, IConfiguration config, UserManager<User> userManager)
+        {
+            _context = context;
+            _config = config;
+            _userManager = userManager;
+        }
+
         // POST: api/User/register
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(User user)
+        public async Task<ActionResult<User>> Register(User user, string password) // Dodaj parametr hasła
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // Hashowanie hasła
-            var passwordHasher = new PasswordHasher<User>();
-            user.Password = passwordHasher.HashPassword(user, user.Password);
+            var result = await _userManager.CreateAsync(user, password);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
 
             // Generowanie tokena JWT
             var token = GenerateJwtToken(user);
 
             return CreatedAtAction("GetUser", new { id = user.Id }, new { user, token });
         }
-
 
         // POST: api/User/login
         [HttpPost("login")]
@@ -119,26 +127,26 @@ namespace MyMovieList.Controllers
                 return BadRequest("Nazwa użytkownika i hasło są wymagane.");
             }
 
-            var user = await _context.Users
-                .SingleOrDefaultAsync(u => u.UserName == loginRequest.Username);
+            var user = await _userManager.FindByNameAsync(loginRequest.Username);
 
             if (user == null)
             {
                 return BadRequest("Użytkownik o podanej nazwie nie istnieje.");
             }
 
-            var passwordHasher = new PasswordHasher<User>();
-            if (passwordHasher.VerifyHashedPassword(user, user.Password, loginRequest.Password) == PasswordVerificationResult.Failed)
+            var isValid = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
+
+            if (!isValid)
             {
                 return BadRequest("Podane hasło jest nieprawidłowe.");
             }
-
 
             // Generowanie tokena JWT
             var token = GenerateJwtToken(user);
 
             return Ok(new { token });
         }
+
 
         private string GenerateJwtToken(User user)
         {

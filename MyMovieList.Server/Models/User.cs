@@ -12,16 +12,11 @@ namespace MyMovieList.models
 
         [Required]
         [StringLength(30)]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Required]
-        [StringLength(30)]
         [DataType(DataType.EmailAddress)]
         public override string Email { get; set; }
 
-        // Relacje
-        
+
+
     }
 }
 

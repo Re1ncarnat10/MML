@@ -12,8 +12,17 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity services to the container.
-builder.Services.AddIdentity<User, IdentityRole<int>>()
-    .AddEntityFrameworkStores<MyDbContext>();
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+})
+.AddEntityFrameworkStores<MyDbContext>();
+
 
 // Configure JWT authentication
 var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
@@ -60,9 +69,9 @@ using (var scope = app.Services.CreateScope())
     string password = "Admin123!";
     string userName = "admin";
 
-    if (await userManager.FindByEmailAsync(email) == null)
+    if (!string.IsNullOrEmpty(password) && await userManager.FindByEmailAsync(email) == null)
     {
-        var user = new User { UserName = userName, Email = email, Password = password };
+        var user = new User { UserName = userName, Email = email };
         var result = await userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
