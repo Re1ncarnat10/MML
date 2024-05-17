@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace MyMovieList.Controllers
 {
@@ -18,13 +19,14 @@ namespace MyMovieList.Controllers
     {
         private readonly MyDbContext _context;
         private readonly IConfiguration _config;
+        private readonly UserManager<User> _userManager;
 
-        public UserController(MyDbContext context, IConfiguration config)
+        public UserController(MyDbContext context, IConfiguration config, UserManager<User> userManager)
         {
             _context = context;
             _config = config;
+            _userManager = userManager;
         }
-
 
         // GET: api/User
         [HttpGet]
@@ -87,29 +89,25 @@ namespace MyMovieList.Controllers
 
             return user;
         }
-        private readonly UserManager<User> _userManager;
-
-        public UserController(MyDbContext context, IConfiguration config, UserManager<User> userManager)
-        {
-            _context = context;
-            _config = config;
-            _userManager = userManager;
-        }
 
         // POST: api/User/register
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(User user, string password) // Dodaj parametr hasła
+        public async Task<ActionResult> Register(RegisterModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _userManager.CreateAsync(user, password);
+            var user = new User { UserName = model.Username, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                // Lista błędów
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                // Błędy
+                return BadRequest(new { errors = errors });
             }
 
             // Generowanie tokena JWT
@@ -147,17 +145,14 @@ namespace MyMovieList.Controllers
             return Ok(new { token });
         }
 
-
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-};
-
-
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -173,13 +168,20 @@ namespace MyMovieList.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
     }
+
     public class LoginRequest
     {
         public string Username { get; set; }
         public string Password { get; set; }
     }
 
+    public class RegisterModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
+    }
 }
+
 

@@ -1,7 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Header = () => {
+    const isLoggedIn = localStorage.getItem('token') !== null;
+    const username = localStorage.getItem('username'); // Pobranie nazwy u¿ytkownika
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username'); 
+        navigate('/');
+    };
+
     return (
         <header>
             <div className="container">
@@ -19,13 +29,28 @@ export const Header = () => {
                             <Link to="/watched">Watched</Link>
                         </li>
 
-                        <li>
-                            <Link to="/login">Login</Link>
-                        </li>
+                        {isLoggedIn ? (
+                            <>
+                                <li>
+                                    <button onClick={handleLogout} className="btn btn-main">
+                                        Logout
+                                    </button>
+                                </li>
+                                <li className="username">
+                                    {username}
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <Link to="/login">Login</Link>
+                                </li>
 
-                        <li>
-                            <Link to="/register">Register</Link>
-                        </li>
+                                <li>
+                                    <Link to="/register">Register</Link>
+                                </li>
+                            </>
+                        )}
 
                         <li>
                             <Link to="/add" className="btn btn-main">
@@ -38,3 +63,5 @@ export const Header = () => {
         </header>
     );
 };
+
+
