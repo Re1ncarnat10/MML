@@ -1,12 +1,25 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
 
-function Footer() {
+export const Footer = () => {
     return (
         <footer>
-            <p>MyMovieList 2023 Prawa zastrze¿one</p>
+            <div className="container">
+                <div className="inner-content">
+                    <div className="brand">
+                        <Link to="/">WatchList</Link>
+                    </div>
+
+                    <div className="subscribe">
+                        <h3>Stay Updated!</h3>
+                        <p>Subscribe to our newsletter for the latest movie updates, news, and special offers.</p>
+                        <form>
+                            <input type="email" placeholder="Enter your email" />
+                            <button type="submit">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </footer>
     );
-}
-
-export default Footer;
+};

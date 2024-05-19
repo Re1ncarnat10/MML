@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-    // Sprawdzenie, czy token u¿ytkownika istnieje w localStorage
     const isLoggedIn = localStorage.getItem('token') !== null;
 
     return (
@@ -22,6 +21,21 @@ const Home = () => {
                             </Link>
                         </>
                     )}
+
+                    {/* Wyœwietlanie dodatkowych opcji tylko jeœli u¿ytkownik jest zalogowany */}
+                    {isLoggedIn && (
+                        <>
+                            <Link to="/profile" className="btn btn-primary">
+                                Profile
+                            </Link>
+                            <button className="btn btn-secondary" onClick={() => {
+                                localStorage.removeItem('token');
+                                window.location.reload(); // Odœwie¿enie strony po wylogowaniu
+                            }}>
+                                Logout
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
@@ -29,4 +43,3 @@ const Home = () => {
 };
 
 export default Home;
-

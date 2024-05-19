@@ -3,6 +3,8 @@
     "eslint-plugin-react": "^7.34.1"
   },
   "dependencies": {
-    "react-router-dom": "^6.23.0"
+    "@remix-run/router": "^1.16.1",
+    "bootstrap": "^5.3.3",
+    "react-router-dom": "^6.23.1"
   }
 }

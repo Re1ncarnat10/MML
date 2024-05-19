@@ -1,73 +1,64 @@
 import React, { useState } from 'react';
 
-const Register = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
+function UserRegistration() {
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+        email: ''
+    });
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
 
-    const handleRegister = async (event) => {
-        event.preventDefault();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
         try {
             const response = await fetch('/api/User/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: username, password: password, email: email }), 
+                body: JSON.stringify(formData)
             });
 
             if (!response.ok) {
-                throw new Error('Registration failed');
+                const errorData = await response.json();
+                throw new Error(errorData.errors.join('\n'));
             }
 
-            const data = await response.json();
-            console.log('Registration successful:', data);
-            setSuccessMessage('Registration successful!');
-            setTimeout(() => {
-                setSuccessMessage('');
-            }, 5000); // Hide success message after 5 seconds
+            alert('User registered successfully!');
+            setFormData({ username: '', password: '', email: '' });
+            setError('');
         } catch (error) {
-            setError('Registration failed. Please try again.');
-            console.error('Registration error:', error);
+            setError('Registration failed: ' + error.message);
         }
     };
 
     return (
         <div>
-            <h2>Register</h2>
-            <form onSubmit={handleRegister}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
+            <h1>User Registration</h1>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Username:
+                    <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                </label><br />
+                <label>
+                    Password:
+                    <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                </label><br />
+                <label>
+                    Email:
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                </label><br /><br />
                 <button type="submit">Register</button>
             </form>
-            {error && <div>{error}</div>}
-            {successMessage && <div>{successMessage}</div>}
+            {error && <p>{error}</p>}
         </div>
     );
-};
+}
 
-export default Register;
+export default UserRegistration;

@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const Header = () => {
     const isLoggedIn = localStorage.getItem('token') !== null;
-    const username = localStorage.getItem('username'); // Pobranie nazwy u¿ytkownika
+    const username = isLoggedIn ? localStorage.getItem('username') : null;
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('username'); 
+        localStorage.removeItem('username');
         navigate('/');
     };
 
@@ -29,18 +29,22 @@ export const Header = () => {
                             <Link to="/watched">Watched</Link>
                         </li>
 
-                        {isLoggedIn ? (
+                        {isLoggedIn && (
                             <>
+                                <li>
+                                    <Link to="/profile" className="username">
+                                        {username}
+                                    </Link>
+                                </li>
                                 <li>
                                     <button onClick={handleLogout} className="btn btn-main">
                                         Logout
                                     </button>
                                 </li>
-                                <li className="username">
-                                    {username}
-                                </li>
                             </>
-                        ) : (
+                        )}
+
+                        {!isLoggedIn && (
                             <>
                                 <li>
                                     <Link to="/login">Login</Link>
@@ -63,5 +67,3 @@ export const Header = () => {
         </header>
     );
 };
-
-
