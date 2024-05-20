@@ -3,17 +3,23 @@ import { Link } from "react-router-dom";
 
 export const Footer = () => {
     const token = `Bearer ${localStorage.getItem('token')}`
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    let userId;
+    if (token && token.split('.').length > 1) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
 
-    const data = JSON.parse(jsonPayload);
-    const userId = data.sub; // 'sub' claim contains the user's ID
+        const data = JSON.parse(jsonPayload);
+        userId = data.sub; // 'sub' claim contains the user's ID
 
-    // Store the user's ID in the local storage
-    localStorage.setItem('userId', userId);
+        // Store the user's ID in the local storage
+        localStorage.setItem('userId', userId);
+    } else {
+        console.log('Invalid or missing token');
+    }
+
     return (
         <footer style={{ position: 'absolute', bottom: 0, width: '100%' }}>
             <div className="container">

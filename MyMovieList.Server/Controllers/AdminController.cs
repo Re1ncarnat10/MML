@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyMovieList.Controllers;
 using MyMovieList.models;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyMovieList.Server.Controllers
 {
-    [Authorize(Roles = "admin")]
+
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -49,15 +51,37 @@ namespace MyMovieList.Server.Controllers
             return NoContent();
         }
 
+        public class CreateMovieViewModel
+        {
+           
+            public string? Title { get; set; }
+            public string? Description { get; set; }
+            public int ReleaseYear { get; set; }
+        }
+
         // POST: api/Admin
         [HttpPost]
-        public async Task<ActionResult<Movie>> CreateMovie(Movie movie)
+        public async Task<ActionResult<Movie>> CreateMovie(CreateMovieViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage)).ToList();
+                return BadRequest(new { errors = errors });
+            }
+
+            var movie = new Movie
+            {
+                Title = model.Title,
+                Description = model.Description,
+                ReleaseYear = model.ReleaseYear
+            };
+
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMovie", new { id = movie.MovieId }, movie);
+            return CreatedAtAction(nameof(MoviesController.GetMovie), "Movies", new { id = movie.MovieId }, movie);
         }
+
 
         // DELETE: api/Admin/id
         [HttpDelete("{id}")]

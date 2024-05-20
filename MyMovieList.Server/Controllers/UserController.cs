@@ -144,15 +144,21 @@ namespace MyMovieList.Controllers
 
             return Ok(new { token });
         }
-        
-        private string GenerateJwtToken(User user)
+
+        private async Task<string> GenerateJwtToken(User user)
         {
-            var claims = new[]
+            var claims = new List<Claim>
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+    };
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -168,20 +174,19 @@ namespace MyMovieList.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
 
-    public class LoginRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
 
-    public class RegisterModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
+        public class LoginRequest
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+
+        public class RegisterModel
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+            public string Email { get; set; }
+        }
     }
 }
-
-
