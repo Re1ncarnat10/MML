@@ -25,8 +25,8 @@ const Home = () => {
                     {/* Wyœwietlanie dodatkowych opcji tylko jeœli u¿ytkownik jest zalogowany */}
                     {isLoggedIn && (
                         <>
-                            <Link to="/profile" className="btn btn-primary">
-                                Profile
+                            <Link to="/movielist" className="btn btn-primary">
+                                My Films
                             </Link>
                             <button className="btn btn-secondary" onClick={() => {
                                 localStorage.removeItem('token');

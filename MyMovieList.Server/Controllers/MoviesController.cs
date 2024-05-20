@@ -44,31 +44,53 @@ namespace MyMovieList.Controllers
         // Metody dla użytkownika do dodawania filmów do listy, usuwania filmów z listy, zmiany statusu filmu na liście, dodawania filmu do ulubionych, dodawania oceny filmu
 
         // POST: api/Movies/AddToMyList/id
+        public class UserMovieInputDto
+        {
+            public int StatusId { get; set; }
+            public bool IsFavorite { get; set; }
+            public int? Rating { get; set; }
+        }
+
+        public class ErrorResponse
+        {
+            public string ErrorMessage { get; set; }
+            public List<string> Errors { get; set; }
+        }
+
+        // Updated MovieController methods to use DTOs
         [Authorize]
         [HttpPost("AddToMyList/{id}")]
-        public async Task<ActionResult> AddToMyList(int id)
+        public async Task<ActionResult> AddToMyList(int id, [FromBody] UserMovieInputDto userMovieInputDto)
         {
             var movie = await _context.Movies.FindAsync(id);
             if (movie == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = "Movie not found" });
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+
             if (userMovie != null)
             {
-                return BadRequest("Film jest już na liście użytkownika");
+                return BadRequest(new ErrorResponse { ErrorMessage = "Movie already in user's list" });
             }
 
-            userMovie = new UserMovie { UserId = int.Parse(userId), MovieId = id };
-            _context.UserMovies.Add(userMovie);
+            userMovie = new UserMovie
+            {
+                UserId = int.Parse(userId),
+                MovieId = id,
+                StatusId = userMovieInputDto.StatusId,
+                IsFavorite = userMovieInputDto.IsFavorite,
+                Rating = userMovieInputDto.Rating
+            };
 
+            _context.UserMovies.Add(userMovie);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
         // PUT: api/Movies/UpdateMyList/id
         [Authorize]

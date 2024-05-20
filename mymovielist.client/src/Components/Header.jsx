@@ -21,12 +21,10 @@ export const Header = () => {
                     </div>
 
                     <ul className="nav-links">
-                        <li>
-                            <Link to="/">Watch List</Link>
-                        </li>
+                        
 
                         <li>
-                            <Link to="/watched">Watched</Link>
+                            <Link to="/movielist">My Films</Link>
                         </li>
 
                         {isLoggedIn && (

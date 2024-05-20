@@ -45,55 +45,7 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Admin': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Admin{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/User': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/User/{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/User/register': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/User/login': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Movies': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Movies/{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Movies/AddToMyList/{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Movies/UpdateMyList/{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Movies/MyList': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/Movies/Remove/From/My/List/{id}': {
+            '/api': {
                 target: 'https://localhost:7020/',
                 secure: false
             },
@@ -101,15 +53,7 @@ export default defineConfig({
                 target: 'https://localhost:7020/',
                 secure: false
             },
-            '^/api/Admin{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
             '^/api/User': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/api/User/{id}': {
                 target: 'https://localhost:7020/',
                 secure: false
             },
@@ -125,15 +69,11 @@ export default defineConfig({
                 target: 'https://localhost:7020/',
                 secure: false
             },
-            '^/api/Movies/{id}': {
+            '^/api/Movies/AddToMyList': {
                 target: 'https://localhost:7020/',
                 secure: false
             },
-            '^/api/Movies/AddToMyList/{id}': {
-                target: 'https://localhost:7020/',
-                secure: false
-            },
-            '^/api/Movies/UpdateMyList/{id}': {
+            '^/api/Movies/UpdateMyList': {
                 target: 'https://localhost:7020/',
                 secure: false
             },
@@ -141,7 +81,7 @@ export default defineConfig({
                 target: 'https://localhost:7020/',
                 secure: false
             },
-            '^/api/Movies/Remove/From/My/List/{id}': {
+            '^/api/Movies/Remove/From/My/List': {
                 target: 'https://localhost:7020/',
                 secure: false
             },

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export const Footer = () => {
     return (
-        <footer>
+        <footer style={{ position: 'absolute', bottom: 0, width: '100%' }}>
             <div className="container">
                 <div className="inner-content">
                     <div className="brand">

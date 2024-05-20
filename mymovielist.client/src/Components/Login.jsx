@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-    });
-    const [error, setError] = useState('');
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(''); // Add this line
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,40 +16,31 @@ function Login() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({ username, password })
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.errors.join('\n'));
+                const errorData = await response.json(); // Get error message from response
+                throw new Error(errorData.errors.join('\n')); // Use error message in thrown error
             }
 
-            alert('Login successful!');
-            setFormData({ username: '', password: '' });
-            setError('');
-            window.location = '/';*//]
+            const { token } = await response.json();
+            localStorage.setItem('token', token);
 
+            // Redirect to MovieList page
+            navigate('/movielist');
         } catch (error) {
-            setError('Login failed: ' + error.message);
+            setError('Login failed: ' + error.message); // Set error message
         }
     };
 
     return (
-        <div>
-            <h1>User Login</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username:
-                    <input type="text" name="username" value={formData.username} onChange={handleChange} required />
-                </label><br />
-                <label>
-                    Password:
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-                </label><br /><br />
-                <button type="submit">Login</button>
-            </form>
-            {error && <p>{error}</p>}
-        </div>
+        <form onSubmit={handleSubmit}>
+            <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" required />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+            <button type="submit">Log In</button>
+            {error && <p>{error}</p>} {/* Display error message */}
+        </form>
     );
 }
 
