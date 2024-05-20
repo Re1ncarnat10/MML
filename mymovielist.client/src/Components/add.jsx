@@ -7,6 +7,7 @@ function AddMovie() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    console.log(localStorage.getItem('token'));
 
     useEffect(() => {
         async function fetchMovies() {
@@ -36,7 +37,7 @@ function AddMovie() {
             setLoading(false);
         }
     };
-
+   
     return (
         <div>
             <h2>Add Movie to My List</h2>

@@ -107,7 +107,7 @@ namespace MyMovieList.Controllers
                 // Lista błędów
                 var errors = result.Errors.Select(e => e.Description).ToList();
                 // Błędy
-                return BadRequest(new { errors = errors });
+                return BadRequest(new { errors });
             }
 
             // Generowanie tokena JWT
@@ -144,7 +144,7 @@ namespace MyMovieList.Controllers
 
             return Ok(new { token });
         }
-
+        
         private string GenerateJwtToken(User user)
         {
             var claims = new[]

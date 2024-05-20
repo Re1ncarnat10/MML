@@ -7,36 +7,40 @@ function MovieList() {
     const [ratings, setRatings] = useState({}); 
 
     useEffect(() => {
-        const fetchMovies = async () => {
+        const fetchMovies = () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 setError('No token found');
                 return;
             }
-
-            try {
-                const response = await fetch('api/Movies/MyList', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-
-                if (!response.ok) {
-                    const responseText = await response.json();
-                    console.log('Response text:', responseText);
-                    throw new Error('Network response was not ok');
+            
+            fetch('api/Movies/MyList', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
-
-                const data = await response.json();
-                setMovies(data);
-            }
-            catch (error) {
-                setError(`Failed to fetch movies: ${error.message}`);
-            }
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    if (!data.errors) {
+                        setMovies(data);
+                    } else {
+                        setMovies([]);
+                        setError(data.errors);
+                    }
+                })
+                .catch((error) => {
+                    setError(`Failed to fetch movies: ${error.message}`);
+                });
         };
 
         fetchMovies();
     }, []);
+
 
     const handleRatingChange = (movieId, newRating) => {
         setRatings(prevRatings => ({ ...prevRatings, [movieId]: newRating }));

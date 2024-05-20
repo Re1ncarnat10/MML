@@ -2,6 +2,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
+    const token = `Bearer ${localStorage.getItem('token')}`
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    const data = JSON.parse(jsonPayload);
+    const userId = data.sub; // 'sub' claim contains the user's ID
+
+    // Store the user's ID in the local storage
+    localStorage.setItem('userId', userId);
     return (
         <footer style={{ position: 'absolute', bottom: 0, width: '100%' }}>
             <div className="container">
@@ -18,6 +30,12 @@ export const Footer = () => {
                             <button type="submit">Subscribe</button>
                         </form>
                     </div>
+                    {userId && (
+                        <div className="user-id">
+                            <h3>Logged in as:</h3>
+                            <p>User ID: {userId}</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </footer>

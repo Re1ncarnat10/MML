@@ -13,18 +13,21 @@ export const getMoviesFromDatabase = async () => {
 };
 
 export const addToMyList = async (movieId) => {
-    const token = localStorage.getItem('token');
+    
     try {
+        const token = localStorage.getItem('token');
         const response = await fetch(`/api/Movies/AddToMyList/${movieId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify({
+               
                 StatusId: 2,
                 IsFavorite: false,
                 Rating: null
+                
             })
         });
 

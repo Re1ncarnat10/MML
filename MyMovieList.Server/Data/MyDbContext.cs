@@ -15,7 +15,6 @@ public class MyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<UserMovie> UserMovies { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<MovieGenre> MovieGenres { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -25,7 +24,9 @@ public class MyDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
         modelBuilder.Entity<UserMovie>()
             .HasKey(um => new { um.UserId, um.MovieId });
+
     }
+
 }
 
 

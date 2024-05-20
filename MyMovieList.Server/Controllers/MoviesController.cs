@@ -59,17 +59,17 @@ namespace MyMovieList.Controllers
 
         // Updated MovieController methods to use DTOs
         [Authorize]
-        [HttpPost("AddToMyList/{id}")]
-        public async Task<ActionResult> AddToMyList(int id, [FromBody] UserMovieInputDto userMovieInputDto)
+        [HttpPost("AddToMyList/{MovieId}")]
+        public async Task<ActionResult> AddToMyList(int MovieId, [FromBody] UserMovieInputDto userMovieInputDto)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _context.Movies.FindAsync(MovieId);
             if (movie == null)
             {
                 return NotFound(new ErrorResponse { ErrorMessage = "Movie not found" });
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == MovieId);
 
             if (userMovie != null)
             {
@@ -79,7 +79,7 @@ namespace MyMovieList.Controllers
             userMovie = new UserMovie
             {
                 UserId = int.Parse(userId),
-                MovieId = id,
+                MovieId = MovieId,
                 StatusId = userMovieInputDto.StatusId,
                 IsFavorite = userMovieInputDto.IsFavorite,
                 Rating = userMovieInputDto.Rating
@@ -94,12 +94,12 @@ namespace MyMovieList.Controllers
 
         // PUT: api/Movies/UpdateMyList/id
         [Authorize]
-        [HttpPut("UpdateMyList/{id}")]
-        public async Task<ActionResult> UpdateMyList(int id, UserMovie userMovieUpdate)
+        [HttpPut("UpdateMyList/{MovieId}")]
+        public async Task<ActionResult> UpdateMyList(int MovieId, UserMovie userMovieUpdate)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
 
-            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == MovieId);
             if (userMovie == null)
             {
                 return NotFound();
@@ -131,12 +131,12 @@ namespace MyMovieList.Controllers
         }
         // DELETE: api/Movies/RemoveFromMyList/id
         [Authorize]
-        [HttpDelete("RemoveFromMyList/{id}")]
-        public async Task<ActionResult> RemoveFromMyList(int id)
+        [HttpDelete("RemoveFromMyList/{MovieId}")]
+        public async Task<ActionResult> RemoveFromMyList(int MovieId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
 
-            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == id);
+            var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == MovieId);
             if (userMovie == null)
             {
                 return NotFound();
