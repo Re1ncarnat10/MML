@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MyMovieList.Server.Controllers
 {
 
-    //[Authorize]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -51,17 +51,26 @@ namespace MyMovieList.Server.Controllers
             return NoContent();
         }
 
+        public class MovieViewModel
+        {
+            public int MovieId { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public int ReleaseYear { get; set; }
+            public string GenreName { get; set; }
+        }
         public class CreateMovieViewModel
         {
-           
-            public string? Title { get; set; }
-            public string? Description { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
             public int ReleaseYear { get; set; }
+            public string GenreName { get; set; }
         }
+
 
         // POST: api/Admin
         [HttpPost]
-        public async Task<ActionResult<Movie>> CreateMovie(CreateMovieViewModel model)
+        public async Task<ActionResult<MovieViewModel>> CreateMovie(CreateMovieViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -69,18 +78,43 @@ namespace MyMovieList.Server.Controllers
                 return BadRequest(new { errors = errors });
             }
 
+            // Sprawdź, czy gatunek o podanej nazwie już istnieje
+            var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Name == model.GenreName);
+
+            // Jeśli gatunek nie istnieje, utwórz nowy
+            if (genre == null)
+            {
+                genre = new Genre { Name = model.GenreName };
+                _context.Genres.Add(genre);
+            }
+
             var movie = new Movie
             {
                 Title = model.Title,
                 Description = model.Description,
-                ReleaseYear = model.ReleaseYear
+                ReleaseYear = model.ReleaseYear,
+                MovieGenres = new List<MovieGenre>
+    {
+        new MovieGenre { Genre = genre } // Użyj istniejącego lub nowego gatunku
+    }
             };
 
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(MoviesController.GetMovie), "Movies", new { id = movie.MovieId }, movie);
+            var movieViewModel = new MovieViewModel
+            {
+                MovieId = movie.MovieId,
+                Title = movie.Title,
+                Description = movie.Description,
+                ReleaseYear = movie.ReleaseYear,
+                GenreName = genre.Name
+            };
+
+            return CreatedAtAction(nameof(MoviesController.GetMovie), "Movies", new { id = movie.MovieId }, movieViewModel);
         }
+
+
 
 
         // DELETE: api/Admin/id
