@@ -12,22 +12,18 @@ export const getMoviesFromDatabase = async () => {
     }
 };
 
-export const addToMyList = async (movieId) => {
-    
+export const addMovieToMyList = async (movieId) => {
     try {
-        const token = localStorage.getItem('token');
         const response = await fetch(`/api/Movies/AddToMyList/${movieId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + localStorage.getItem('token') // token is a string
             },
             body: JSON.stringify({
-               
-                StatusId: 2,
-                IsFavorite: false,
-                Rating: null
-                
+                statusId: 2,
+                isFavorite: false,
+                rating: 0
             })
         });
 
@@ -40,6 +36,7 @@ export const addToMyList = async (movieId) => {
         throw new Error('Failed to add movie to your list');
     }
 };
+
 
 export const updateMyList = async (movieId, updates) => {
     try {
@@ -58,5 +55,24 @@ export const updateMyList = async (movieId, updates) => {
     } catch (error) {
         console.error('Fetch error:', error);
         throw new Error('Failed to update movie');
+    }
+};
+export const removeFromMyList = async (movieId) => {
+    try {
+        const response = await fetch(`/api/Movies/RemoveFromMyList/${movieId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to remove movie from list');
+        }
+        // Optionally, you can return response.json() if needed
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw new Error('Failed to remove movie from list');
     }
 };

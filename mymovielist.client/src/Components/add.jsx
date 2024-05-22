@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getMoviesFromDatabase, addToMyList } from './api';
+import { getMoviesFromDatabase, addMovieToMyList } from './api';
 
 function AddMovie() {
     const [movies, setMovies] = useState([]);
@@ -7,7 +7,6 @@ function AddMovie() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    console.log(localStorage.getItem('token'));
 
     useEffect(() => {
         async function fetchMovies() {
@@ -27,7 +26,7 @@ function AddMovie() {
     const handleAddToMyList = async () => {
         setLoading(true);
         try {
-            await addToMyList(selectedMovieId);
+            await addMovieToMyList(parseInt(selectedMovieId, 10));
             setError('');
             setSuccess('Movie successfully added to your list');
         } catch (error) {
@@ -47,8 +46,8 @@ function AddMovie() {
             <label htmlFor="MovieId">Select a Movie:</label>
             <select id="MovieId" value={selectedMovieId} onChange={(e) => setSelectedMovieId(e.target.value)}>
                 <option value="">Select a movie...</option>
-                {movies.map(movie => (
-                    <option key={movie.id} value={movie.id}>{movie.title}</option>
+                {movies.map((movie, index) => (
+                    <option key={index} value={movie.movieId}>{movie.title}</option>
                 ))}
             </select>
             <button onClick={handleAddToMyList} disabled={!selectedMovieId || loading}>Add Movie</button>

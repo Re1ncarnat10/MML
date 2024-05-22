@@ -105,26 +105,57 @@ namespace MyMovieList.Controllers
                 return NotFound();
             }
 
-            userMovie.StatusId = userMovieUpdate.StatusId;
-            userMovie.IsFavorite = userMovieUpdate.IsFavorite;
-            userMovie.Rating = userMovieUpdate.Rating;
+            if (userMovieUpdate.StatusId != null)
+            {
+                userMovie.StatusId = userMovieUpdate.StatusId;
+            }
+
+            if (userMovieUpdate.IsFavorite != null)
+            {
+                userMovie.IsFavorite = userMovieUpdate.IsFavorite;
+            }
+
+            if (userMovieUpdate.Rating != null)
+            {
+                userMovie.Rating = userMovieUpdate.Rating;
+            }
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+        public class UserMovieDto
+        {
+            public int MovieId { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public int ReleaseYear { get; set; }
+            public int StatusId { get; set; }
+            public bool IsFavorite { get; set; }
+            public int? Rating { get; set; }
+            public string StatusName { get; set; }
 
+        }
         // GET: api/Movies/MyList
         [Authorize]
         [HttpGet("MyList")]
-        public async Task<ActionResult<IEnumerable<UserMovie>>> GetMyList()
+        public async Task<ActionResult<IEnumerable<UserMovieDto>>> GetMyList()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
 
             var userMovies = await _context.UserMovies
-                .Include(u => u.Movie)
-                .Include(u => u.Status)
-                .Where(u => u.UserId == int.Parse(userId))
+                .Select(u => new UserMovieDto
+                {
+                    MovieId = u.MovieId,
+                    Title = u.Movie.Title,
+                    Description = u.Movie.Description,
+                    ReleaseYear = u.Movie.ReleaseYear,
+                    StatusId = u.StatusId,
+                    StatusName = u.Status.Name,
+                    IsFavorite = u.IsFavorite,
+                    Rating = u.Rating
+                    // Map other properties as needed
+                })
                 .ToListAsync();
 
             return userMovies;

@@ -10,7 +10,7 @@ import "./App.css"
 import "./lib/font-awesome/css/all.min.css"
 import { Header } from './Components/Header';
 import { Footer } from './Components/Footer.jsx';
-
+import { addMovieToMyList } from './Components/api';
 const App = () => {
     
 
@@ -21,7 +21,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/add" element={<AddMovie />} />
+                <Route path="/add" element={<AddMovie addMovieToMyList={addMovieToMyList} />} />
                 <Route path="/movielist" element={<MovieList />} />
             </Routes>
             <Footer />

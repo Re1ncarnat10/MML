@@ -25,7 +25,7 @@ function Login() {
             }
 
             const { token } = await response.json();
-            localStorage.setItem('token', token);
+            localStorage.setItem('token', token.result);
 
             // Redirect to MovieList page
             navigate('/movielist');
