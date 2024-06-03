@@ -11,6 +11,8 @@ import "./lib/font-awesome/css/all.min.css"
 import { Header } from './Components/Header';
 import { Footer } from './Components/Footer.jsx';
 import { addMovieToMyList } from './Components/api';
+import AddFavourites from './Components/AddFavourites.jsx';
+import Profile from './Components/Profile.jsx';
 const App = () => {
     
 
@@ -22,7 +24,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/add" element={<AddMovie addMovieToMyList={addMovieToMyList} />} />
-                <Route path="/movielist" element={<MovieList />} />
+                <Route path="/profile" element={<Profile />} />
             </Routes>
             <Footer />
         </Router>

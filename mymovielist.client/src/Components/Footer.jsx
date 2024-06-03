@@ -34,8 +34,8 @@ export const Footer = () => {
                         <h3>Stay Updated!</h3>
                         <p>Subscribe to our newsletter for the latest movie updates, news, and special offers.</p>
                         <form>
-                            <input type="email" placeholder="Enter your email" />
-                            <button type="submit">Subscribe</button>
+                            <input className="user-form-inputSUB" type="email" placeholder="Enter your email" />
+                            <button className="user-form-buttonSUB" type="submit">Subscribe</button>
                         </form>
                     </div>
                     {userId && (

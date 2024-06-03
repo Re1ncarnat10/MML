@@ -26,8 +26,8 @@ function Login() {
 
             const { token } = await response.json();
             localStorage.setItem('token', token);
-
-            navigate('/movielist');
+            alert('Logged In Successfully');
+            navigate('/');
         } catch (error) {
             setError('Login failed: ' + error.message); // Set error message
         }

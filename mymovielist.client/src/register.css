@@ -82,3 +82,33 @@ p {
     align-self:center;
     color:white;
 }
+
+.user-form-buttonSUB {
+    margin-left: 15px;
+    width: 40%;
+    align-self: center;
+    padding: 11px;
+    background-color: #556B2F;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 20px;
+}
+
+    .user-form-buttonSUB:hover {
+        background-color: #378e26;
+        transform: scale(1.05);
+    }
+
+    .user-form-inputSUB {
+        align-self: center;
+        width: 60%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 1px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }

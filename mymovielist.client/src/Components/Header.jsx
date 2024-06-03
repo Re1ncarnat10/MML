@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 
+
 export const Header = () => {
+
     const isLoggedIn = localStorage.getItem('token') !== null;
     const username = isLoggedIn ? localStorage.getItem('username') : null;
     const navigate = useNavigate();
@@ -9,6 +11,7 @@ export const Header = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        alert('Logged out Successfully')
         navigate('/');
     };
 
@@ -22,10 +25,6 @@ export const Header = () => {
 
                     <ul className="nav-links">
                         
-
-                        <li>
-                            <Link to="/movielist">My Films</Link>
-                        </li>
 
                         {isLoggedIn && (
                             <>
@@ -66,3 +65,5 @@ export const Header = () => {
         </header>
     );
 };
+
+export default Header;
