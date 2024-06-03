@@ -5,7 +5,7 @@ const Home = () => {
     const isLoggedIn = localStorage.getItem('token') !== null;
 
     return (
-        <div className="container">
+        <div className="containerHP">
             <div className="home">
                 <h1>Welcome to MyMovieList!</h1>
                 <p>Please select an option:</p>

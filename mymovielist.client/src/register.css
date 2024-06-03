@@ -1,0 +1,84 @@
+.user-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 63vh;
+    font-family: Arial, sans-serif;
+    margin-bottom:50px;
+    margin-top:50px
+}
+
+
+.user-form-header {
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.user-form {
+    display: flex;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 470px;
+    min-height: 420px;
+    text-align: left;
+    background-color: #333;
+    border-radius: 15px;
+    border: none;
+}
+
+
+.user-form-input {
+    align-self:center;
+    width: 80%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 1px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.user-form-button {
+    margin-top:20px;
+    align-self:center;
+    width:60%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.user-form-buttonR {
+    width: 40%;
+    align-self: center;
+    padding: 10px;
+    background-color: #556B2F;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.user-form-button:hover {
+    background-color: #45a049;
+}
+.user-form-buttonR:hover {
+    background-color: #455823;
+}
+
+.error-message {
+    color: red;
+    margin-top: 20px;
+}
+
+p {
+    align-self:center;
+    color:white;
+}

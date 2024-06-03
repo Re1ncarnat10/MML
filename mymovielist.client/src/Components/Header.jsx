@@ -30,8 +30,13 @@ export const Header = () => {
                         {isLoggedIn && (
                             <>
                                 <li>
-                                    <Link to="/profile" className="username">
-                                        {username}
+                                    <Link to="/profile">
+                                      Your Profile
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/add" className="btn btn-main">
+                                        + Add
                                     </Link>
                                 </li>
                                 <li>
@@ -54,11 +59,7 @@ export const Header = () => {
                             </>
                         )}
 
-                        <li>
-                            <Link to="/add" className="btn btn-main">
-                                + Add
-                            </Link>
-                        </li>
+
                     </ul>
                 </div>
             </div>

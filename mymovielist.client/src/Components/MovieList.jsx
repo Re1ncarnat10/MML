@@ -58,7 +58,7 @@ function MovieList() {
 
         try {
             await updateMyList(movieId, updates);
-            setError(''); // Clear the error message on successful update
+            setError('');
         } catch (error) {
             setError('Failed to update movie');
         }

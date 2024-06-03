@@ -2,30 +2,32 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
-    const token = `Bearer ${localStorage.getItem('token')}`
-    let userId;
-    if (token && token.split('.').length > 1) {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+    const token = localStorage.getItem('token');
+    let userId = null;
 
-        const data = JSON.parse(jsonPayload);
-        userId = data.sub; // 'sub' claim contains the user's ID
+    if (token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
 
-        // Store the user's ID in the local storage
-        localStorage.setItem('userId', userId);
-    } else {
-        console.log('Invalid or missing token');
+            const data = JSON.parse(jsonPayload);
+            userId = data.sub; // 'sub' claim contains the user's ID
+
+            // Store the user's ID in the local storage
+            localStorage.setItem('userId', userId);
+        } catch (error) {
+            console.error("Error decoding token:", error);
+        }
     }
 
     return (
-        <footer style={{ position: 'absolute', bottom: 0, width: '100%' }}>
+        <footer style={{ position: 'relative', bottom: 0, width: '100%' }}>
             <div className="container">
                 <div className="inner-content">
                     <div className="brand">
-                        <Link to="/">WatchList</Link>
                     </div>
 
                     <div className="subscribe">

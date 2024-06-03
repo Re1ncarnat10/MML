@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 function UserRegistration() {
     const [formData, setFormData] = useState({
@@ -7,6 +9,7 @@ function UserRegistration() {
         email: ''
     });
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,30 +36,29 @@ function UserRegistration() {
             alert('User registered successfully!');
             setFormData({ username: '', password: '', email: '' });
             setError('');
+            navigate('/login');
+
         } catch (error) {
             setError('Registration failed: ' + error.message);
         }
     };
 
     return (
-        <div>
-            <h1>User Registration</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username:
-                    <input type="text" name="username" value={formData.username} onChange={handleChange} required />
-                </label><br />
-                <label>
-                    Password:
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-                </label><br />
-                <label>
-                    Email:
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-                </label><br /><br />
-                <button type="submit">Register</button>
+        <div className="user-form-container">
+            <h1 className="user-form-header">User Registration</h1>
+            <form className="user-form" onSubmit={handleSubmit}>               
+                    <input className="user-form-input" type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" required />         
+              
+                    <input className="user-form-input" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
+                               
+                    <input className="user-form-input" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="E-mail" required />
+           
+                <button className="user-form-button" type="submit">Register</button>
+                <br />
+                <p>You already registerd?</p>
+                <button className="user-form-buttonR" onClick={() => navigate('/login')}>Login Now</button>
             </form>
-            {error && <p>{error}</p>}
+            {error && <p className="error-message">{error}</p>}
         </div>
     );
 }

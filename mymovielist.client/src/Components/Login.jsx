@@ -25,9 +25,8 @@ function Login() {
             }
 
             const { token } = await response.json();
-            localStorage.setItem('token', token.result);
+            localStorage.setItem('token', token);
 
-            // Redirect to MovieList page
             navigate('/movielist');
         } catch (error) {
             setError('Login failed: ' + error.message); // Set error message
@@ -35,12 +34,18 @@ function Login() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" required />
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
-            <button type="submit">Log In</button>
-            {error && <p>{error}</p>} {/* Display error message */}
-        </form>
+        <div className="user-form-container">
+            <h1 className="user-form-header">Log In</h1>
+            <form className="user-form" onSubmit={handleSubmit}>
+                <input className="user-form-input" type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" required />
+                <input className="user-form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+                <button className="user-form-button" type="submit">Log In</button>
+                {error && <p>{error}</p>}
+                <br />
+                <p>You dont have account yet?</p>
+                <button className="user-form-buttonR" onClick={() => navigate('/register')}>Register Now</button>
+            </form>
+        </div>
     );
 }
 
