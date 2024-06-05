@@ -82,7 +82,8 @@ namespace MyMovieList.Controllers
                 MovieId = MovieId,
                 StatusId = userMovieInputDto.StatusId,
                 IsFavorite = userMovieInputDto.IsFavorite,
-                Rating = userMovieInputDto.Rating
+                Rating = userMovieInputDto.Rating,
+                Image = movie.Image 
             };
 
             _context.UserMovies.Add(userMovie);
@@ -91,13 +92,19 @@ namespace MyMovieList.Controllers
             return NoContent();
         }
 
+        public class UserMovieUpdateDto
+        {
+            public int? StatusId { get; set; }
+            public bool? IsFavorite { get; set; }
+            public int? Rating { get; set; }
+        }
 
         // PUT: api/Movies/UpdateMyList/id
         [Authorize]
         [HttpPut("UpdateMyList/{MovieId}")]
-        public async Task<ActionResult> UpdateMyList(int MovieId, UserMovie userMovieUpdate)
+        public async Task<ActionResult> UpdateMyList(int MovieId, [FromBody] UserMovieUpdateDto userMovieUpdateDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var userMovie = await _context.UserMovies.FirstOrDefaultAsync(u => u.UserId == int.Parse(userId) && u.MovieId == MovieId);
             if (userMovie == null)
@@ -105,25 +112,26 @@ namespace MyMovieList.Controllers
                 return NotFound();
             }
 
-            if (userMovieUpdate.StatusId != null)
+            if (userMovieUpdateDto.StatusId != null)
             {
-                userMovie.StatusId = userMovieUpdate.StatusId;
+                userMovie.StatusId = userMovieUpdateDto.StatusId.Value;
             }
 
-            if (userMovieUpdate.IsFavorite != null)
+            if (userMovieUpdateDto.IsFavorite != null)
             {
-                userMovie.IsFavorite = userMovieUpdate.IsFavorite;
+                userMovie.IsFavorite = userMovieUpdateDto.IsFavorite.Value;
             }
 
-            if (userMovieUpdate.Rating != null)
+            if (userMovieUpdateDto.Rating != null)
             {
-                userMovie.Rating = userMovieUpdate.Rating;
+                userMovie.Rating = userMovieUpdateDto.Rating.Value;
             }
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
         public class UserMovieDto
         {
             public int MovieId { get; set; }
@@ -134,6 +142,7 @@ namespace MyMovieList.Controllers
             public bool IsFavorite { get; set; }
             public int? Rating { get; set; }
             public string StatusName { get; set; }
+            public string Image { get; set; }
 
         }
         // GET: api/Movies/MyList
@@ -141,9 +150,9 @@ namespace MyMovieList.Controllers
         [HttpGet("MyList")]
         public async Task<ActionResult<IEnumerable<UserMovieDto>>> GetMyList()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Pobierz identyfikator użytkownika z kontekstu autentykacji
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userMovies = await _context.UserMovies
+                .Where(u => u.UserId == int.Parse(userId)) 
                 .Select(u => new UserMovieDto
                 {
                     MovieId = u.MovieId,
@@ -153,8 +162,8 @@ namespace MyMovieList.Controllers
                     StatusId = u.StatusId,
                     StatusName = u.Status.Name,
                     IsFavorite = u.IsFavorite,
-                    Rating = u.Rating
-                    // Map other properties as needed
+                    Rating = u.Rating,
+                    Image = u.Image
                 })
                 .ToListAsync();
 

@@ -15,8 +15,6 @@ const Home = () => {
     const [favourites, setFavourites] = useState('');
 
 
-    //const isLoggedIn = false; // This should be set based on your authentication logic
-
     const getMovieRequest = async (searchValue) => {
         const url = `https://www.omdbapi.com/?s=${searchValue}&apikey=6483c78a`;
 
@@ -35,7 +33,7 @@ const Home = () => {
 
     useEffect(() => {
         getMovieRequest(searchValue);
-    }, [searchValue]); 
+    }, [searchValue]);
     const addFavouriteMovie = (movie) => {
         const newFavouriteList = [...favourites, movie]
     };
@@ -47,7 +45,7 @@ const Home = () => {
                 <h1>Welcome to MyMovieList!</h1>
                 <p>Please select an option:</p>
                 <div className="buttons">
-                    {/* Wyœwietlanie linków tylko jeœli u¿ytkownik nie jest zalogowany }
+                    {/* Wy?wietlanie linków tylko je?li u?ytkownik nie jest zalogowany }
                     {!isLoggedIn && (
                         <>
                             <Link to="/login" className="btn btn-primary">
@@ -61,7 +59,7 @@ const Home = () => {
                         </>
                     )}
 
-                    {/* Wyœwietlanie dodatkowych opcji tylko jeœli u¿ytkownik jest zalogowany }
+                    {/* Wy?wietlanie dodatkowych opcji tylko je?li u?ytkownik jest zalogowany }
                     {isLoggedIn && (
                         <>
                             <Link to="/movielist" className="btn btn-primary">
@@ -69,7 +67,7 @@ const Home = () => {
                             </Link>
                             <button className="btn btn-secondary" onClick={() => {
                                 localStorage.removeItem('token');
-                                window.location.reload(); // Odœwie¿enie strony po wylogowaniu
+                                window.location.reload(); // Od?wie?enie strony po wylogowaniu
                             }}>
                                 Logout
                             </button>
@@ -84,10 +82,10 @@ const Home = () => {
                 <SearchBox searchValue={searchValue} setSearchValue={setSearchValue} />
             </div>
 
-                <div className='row'>
+            <div className='row'>
                 <MovieList movies={movies} handleFavoritesClick={AddFavourites} favouriteComponent={AddFavourites} />
-                </div>
             </div>
+        </div>
 
 
     );

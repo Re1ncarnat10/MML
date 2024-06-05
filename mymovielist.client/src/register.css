@@ -5,14 +5,14 @@
     justify-content: center;
     min-height: 63vh;
     font-family: Arial, sans-serif;
-    margin-bottom:50px;
-    margin-top:50px
+
 }
 
 
 .user-form-header {
     margin-bottom: 20px;
     justify-content: center;
+    color: white
 }
 
 .user-form {

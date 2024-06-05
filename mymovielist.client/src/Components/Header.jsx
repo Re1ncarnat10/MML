@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import  {getUserRoles}  from './api';
 
 
 export const Header = () => {
 
     const isLoggedIn = localStorage.getItem('token') !== null;
-    const username = isLoggedIn ? localStorage.getItem('username') : null;
     const navigate = useNavigate();
+    const [isAdmin, setIsAdmin] = useState(false);
 
+    useEffect(() => {
+        const checkUserRole = async () => {
+            const roles = await getUserRoles();
+            setIsAdmin(roles.includes('admin'));
+        };
+
+        checkUserRole();
+    }, []);
+    
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
@@ -28,18 +38,22 @@ export const Header = () => {
 
                         {isLoggedIn && (
                             <>
+                            {isAdmin && (
+                               
                                 <li>
-                                    <Link to="/profile">
+                                    <Link className="btn btn-main" to="/admin">
+                                      Admin Panel
+                                    </Link>
+                                </li>
+                            )}
+                                <li>
+                                    <Link className="btn btn-main" to="/profile">
                                       Your Profile
                                     </Link>
                                 </li>
+  
                                 <li>
-                                    <Link to="/add" className="btn btn-main">
-                                        + Add
-                                    </Link>
-                                </li>
-                                <li>
-                                    <button onClick={handleLogout} className="btn btn-main">
+                                    <button onClick={handleLogout} className="admin-btn-del btn btn-main">
                                         Logout
                                     </button>
                                 </li>

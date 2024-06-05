@@ -58,6 +58,7 @@ namespace MyMovieList.Server.Controllers
             public string Description { get; set; }
             public int ReleaseYear { get; set; }
             public string GenreName { get; set; }
+            public string Image { get; set; }
         }
         public class CreateMovieViewModel
         {
@@ -65,6 +66,8 @@ namespace MyMovieList.Server.Controllers
             public string Description { get; set; }
             public int ReleaseYear { get; set; }
             public string GenreName { get; set; }
+            public string Image { get; set; }
+
         }
 
 
@@ -93,10 +96,11 @@ namespace MyMovieList.Server.Controllers
                 Title = model.Title,
                 Description = model.Description,
                 ReleaseYear = model.ReleaseYear,
-                MovieGenres = new List<MovieGenre>
-    {
-        new MovieGenre { Genre = genre } // Użyj istniejącego lub nowego gatunku
-    }
+                Image = model.Image,
+                MovieGenres = new List<MovieGenre> {
+                 new MovieGenre { Genre = genre }
+                },
+               
             };
 
             _context.Movies.Add(movie);
@@ -108,7 +112,8 @@ namespace MyMovieList.Server.Controllers
                 Title = movie.Title,
                 Description = movie.Description,
                 ReleaseYear = movie.ReleaseYear,
-                GenreName = genre.Name
+                GenreName = genre.Name,
+                Image  = movie.Image
             };
 
             return CreatedAtAction(nameof(MoviesController.GetMovie), "Movies", new { id = movie.MovieId }, movieViewModel);

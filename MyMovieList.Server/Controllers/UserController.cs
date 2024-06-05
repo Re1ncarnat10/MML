@@ -144,6 +144,29 @@ namespace MyMovieList.Controllers
 
             return Ok(new { token });
         }
+        // GET: api/User/{id}/roles
+        [HttpGet("roles")]
+        public async Task<ActionResult> GetCurrentUserRoles()
+        {
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(roles);
+        }
 
         private async Task<string> GenerateJwtToken(User user)
         {

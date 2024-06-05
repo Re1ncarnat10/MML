@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace MyMovieList.models
 {
     public class Movie
@@ -12,7 +11,7 @@ namespace MyMovieList.models
         public string? Title { get; set; }
         public string? Description { get; set; }
         public int ReleaseYear { get; set; }
-
+        public string? Image { get; set; }
         // Relacje
         public virtual ICollection<MovieGenre> MovieGenres { get; set; }
         public virtual ICollection<UserMovie> UserMovies { get; set; }

@@ -11,6 +11,27 @@ export const getMoviesFromDatabase = async () => {
         throw new Error('Failed to fetch movies');
     }
 };
+export const getMyMovieList = async () => {
+    try {
+        const response = await fetch('/api/Movies/MyList', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const myList = await response.json();
+
+        return myList; 
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
 
 export const addMovieToMyList = async (movieId) => {
     try {
@@ -18,10 +39,10 @@ export const addMovieToMyList = async (movieId) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token') // token is a string
+                'Authorization': 'Bearer ' + localStorage.getItem('token') 
             },
             body: JSON.stringify({
-                statusId: 2,
+                statusId: 1,
                 isFavorite: false,
                 rating: 0
             })
@@ -76,3 +97,108 @@ export const removeFromMyList = async (movieId) => {
         throw new Error('Failed to remove movie from list');
     }
 };
+export const createMovie = async (movie) => {
+    try {
+        const response = await fetch('/api/Admin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT token is stored in local storage
+            },
+            body: JSON.stringify(movie),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log('Movie created:', data);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+export const deleteAdmin = async (id) => {
+    try {
+        const response = await fetch(`/api/Admin/${id}`, {
+            method: 'DELETE',
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        console.log(`Movie with id ${id} deleted successfully`);
+    } catch (error) {
+        console.error(error);
+    }
+};
+export const getUser = async () => {
+    try {
+        const response = await fetch('/api/User', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const user = await response.json();
+
+        return user; 
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+export const deleteUser = async (id) => {
+    try {
+        const response = await fetch(`/api/User/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        console.log(`User with id ${id} deleted successfully`);
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+
+export const getUserRoles = async () => {
+    try {
+        const response = await fetch('/api/User/roles', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const roles = await response.json();
+
+        return roles; 
+    } catch (error) {
+        return []; 
+    }
+};
+

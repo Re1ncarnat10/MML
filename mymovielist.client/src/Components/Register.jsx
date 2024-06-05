@@ -45,7 +45,8 @@ function UserRegistration() {
 
     return (
         <div className="user-form-container">
-            <h1 className="user-form-header">User Registration</h1>
+            <h1 className="user-form-header mt-5">User Registration</h1>
+             {error && <div className="alert alert-warning" >{error}</div>}
             <form className="user-form" onSubmit={handleSubmit}>               
                     <input className="user-form-input" type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" required />         
               
@@ -58,7 +59,6 @@ function UserRegistration() {
                 <p>You already registerd?</p>
                 <button className="user-form-buttonR" onClick={() => navigate('/login')}>Login Now</button>
             </form>
-            {error && <p className="error-message">{error}</p>}
         </div>
     );
 }

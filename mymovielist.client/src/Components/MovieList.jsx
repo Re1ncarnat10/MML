@@ -1,22 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import ApiMovieCard from './ApiMovieCard';
 
 const MovieList = (props) => {
 	const FavouriteComponent = props.favouriteComponent;
 
+
 	return (
-		<>
-			{props.movies.map((movie, index) => (
-				<div className='image-container d-flex justify-content-start m-3'>
-					<img src={movie.Poster} alt='movie'></img>
-					<div
-						onClick={() => props.handleFavouritesClick(movie)}
-						className='overlay d-flex align-items-center justify-content-center'
-					>
-						<FavouriteComponent />
-					</div>
-				</div>
-			))}
-		</>
+		<div className="movie-list">
+            {props.movies.map((movie, index) => (
+                <ApiMovieCard key={index} movie={movie} />
+            ))}
+        </div>
 	);
 };
 

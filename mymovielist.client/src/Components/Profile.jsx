@@ -1,64 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FavoriteCard from './FavoriteCard';
+import { getMyMovieList } from './api';
 
 const Profile = () => {
-    const [username, setUsername] = useState(null);
+    const [myList, setMyList] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.log('No token found, redirecting to login.');
-            return;
-        }
-
-        const fetchUserData = async () => {
+        const fetchMyList = async () => {
             try {
-                const response = await fetch('/api/User', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('User data fetched:', data);
-                    setUsername(data.userName); // U¿ywamy pola `userName` z odpowiedzi API
-                } else {
-                    console.error('Error fetching user data:', response.status, response.statusText);
-                    localStorage.removeItem('token');
-                    navigate('/login');
-                }
+                const list = await getMyMovieList();
+                setMyList(list);
             } catch (error) {
-                console.error('Error fetching user data:', error);
-                localStorage.removeItem('token');
-                navigate('/login');
+                console.error('Failed to fetch my list:', error);
+                navigate('/login'); // Redirect to login page if fetch fails
             }
         };
 
-        fetchUserData();
+        fetchMyList();
     }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        alert('Logged out successfully.');
-        navigate('/');
-    };
-
     return (
-        <div>
-            <h1>Profile</h1>
-            {username ? (
-                <div>
-                    <p>Welcome, {username}!</p>
-                    <button onClick={handleLogout}>Logout</button>
-                </div>
-            ) : (
-                <p>Loading...</p>
-            )}
-        </div>
+        <>
+            <h1 className="user-form-header mt-2">My List</h1>
+            <div className="movie-grid mt-4">
+            
+                {myList.map(movie => (
+                    <FavoriteCard key={movie.movieId} movie={movie} />
+                ))}
+            </div>
+        </>
     );
 };
 

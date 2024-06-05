@@ -10,5 +10,6 @@
         public virtual Status Status { get; set; }
         public bool IsFavorite { get; set; }
         public int? Rating { get; set; }
+        public string Image {  get; set; }
     }
 }
